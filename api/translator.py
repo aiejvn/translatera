@@ -3,6 +3,7 @@ import os
 from typing import List
 import requests
 import json
+import re
 
 class Translator:
 
@@ -17,27 +18,13 @@ class Translator:
             "Content-Type": "application/json"
         }
 
-        response = requests.get(url = self.api_url + "available_models")
-        response = json.loads(response._content)
-        
-        models = response["models"]
-        models = sorted(models.items(), key = lambda x: -x[1])
-        model = models[0][0]
-
         self.payload = {
-            "model": model,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a master translator."
-                }
-            ],
-            "max_tokens": 100,
-            "temperature": 0,
+            "model": "llama3.1:8b",
+            "messages": [],
+            "max_tokens": 120,
+            "temperature": 0.9,
             "request_timeout_time": 240
         }
-
-    
 
     def translate(self, input:str, original:str="English", target:str = "French")->str:
         # If no language is provided, assumes input should be EN->FR
@@ -49,10 +36,16 @@ class Translator:
         response = requests.post(url=self.api_url + "chat/completions", headers=self.headers, json=self.payload)
 
         # Output the response
-        print(response.status_code)
-        print(response.json())
-   
-
+        if response.status_code != 200:
+            print("Received error", response.status_code)
+        
+        result = json.loads(response._content)["choices"][0]['message']
+        self.payload["messages"].append(result)
+        sentences = re.findall("\".*\"", result['content'])
+        return sentences[-1] if sentences else "Could not find translated sentence." # text result
+        
 if __name__ == "__main__":
     translator = Translator()
-    translator.translate("Hello, world!")
+    for i in range(10):
+        text = translator.translate("Hello, world!")
+        print(text)
