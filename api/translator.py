@@ -42,8 +42,10 @@ class Translator:
         try:
             result = json.loads(response._content)["choices"][0]['message']
             self.payload["messages"].append(result)
-            sentences = re.findall("(\"|\')[^\"\']+(\"|\')", result['content'])
-            return sentences[-1] if sentences else result['content']
+            # sentences = re.findall("(\"|\')[^\"\']+(\"|\')", result['content'])
+            # print(result['content'])
+            # return sentences[-1] if sentences else result['content']
+            return result['content']
         except Exception as e:
             return f"Could not find translated sentence. Error: {e}. Content: {json.loads(response.content)}"  
         
