@@ -87,9 +87,9 @@ def translate():
         'message':translator.translate(content, original=input_language, target=output_language)
     })
 
-@app.route("/")
-def main():
-    return jsonify({'message':'Flask cannot handle dynamic React pages. Stop rendering using Flask.'}), 404
+# @app.route("/")
+# def main():
+#     return jsonify({'message':'Flask cannot handle dynamic React pages. Stop rendering using Flask.'}), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080, load_dotenv=True)
