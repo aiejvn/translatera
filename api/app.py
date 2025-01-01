@@ -1,4 +1,4 @@
-from translator import Translator
+from api.translator import Translator
 import os
 from flask import Flask, jsonify, render_template, request
 import json
