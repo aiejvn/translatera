@@ -69,7 +69,7 @@ app = Flask(
     # static_url_path=''        
             )
 
-CORS(app) # enables next js to make backend requests to flask
+# CORS(app) # enables next js to make backend requests to flask
 translator = Translator()
 
 @app.route("/api/python")
