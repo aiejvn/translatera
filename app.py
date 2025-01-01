@@ -62,7 +62,13 @@ def test_translator():
 
 # env file contains environment (debug/production)
 
-app = Flask(__name__, template_folder="app")
+app = Flask(
+    __name__,
+    template_folder="app",
+    static_folder='app',
+    static_url_path=''        
+            )
+
 CORS(app) # enables next js to make backend requests to flask
 translator = Translator()
 
@@ -84,7 +90,8 @@ def translate():
 @app.route("/")
 def main():
     return render_template(
-        "page.tsx",
+        # "page.tsx",
+        "index.html",
         title="translatera"
         # url=os.getenv("URL")
     )
