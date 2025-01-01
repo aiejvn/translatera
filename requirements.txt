@@ -47,9 +47,6 @@ requests==2.32.3
 six==1.16.0
 stack-data==0.6.3
 sympy==1.13.1
-torch==2.4.1+cu124
-torchaudio==2.4.1+cu124
-torchvision==0.19.1+cu124
 tornado==6.4.1
 tqdm==4.66.5
 traitlets==5.14.3
