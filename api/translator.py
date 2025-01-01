@@ -31,7 +31,7 @@ class Translator:
         # Get the biggest model available - those tend to be good at translation
         self.payload["messages"].append({
             "role":"user",
-            "content":f"Translate {input} from {original} to {target}."
+            "content":f"Translate {input} from {original} to {target}. Output should contain words from {target} only."
         })
         response = requests.post(url=self.api_url + "chat/completions", headers=self.headers, json=self.payload)
 
@@ -39,13 +39,16 @@ class Translator:
         if response.status_code != 200:
             print("Received error", response.status_code)
         
-        result = json.loads(response._content)["choices"][0]['message']
-        self.payload["messages"].append(result)
-        sentences = re.findall("\".*\"", result['content'])
-        return sentences[-1] if sentences else "Could not find translated sentence." # text result
+        try:
+            result = json.loads(response._content)["choices"][0]['message']
+            self.payload["messages"].append(result)
+            sentences = re.findall("(\"|\')[^\"\']+(\"|\')", result['content'])
+            return sentences[-1] if sentences else result['content']
+        except Exception as e:
+            return f"Could not find translated sentence. Error: {e}. Content: {json.loads(response.content)}"  
         
 if __name__ == "__main__":
     translator = Translator()
     for i in range(10):
         text = translator.translate("Hello, world!")
-        print(text)
+        print("Iteration", i, ":", text)
