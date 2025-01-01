@@ -1,10 +1,9 @@
 from dotenv import load_dotenv, find_dotenv
 import requests
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, request
 import json
 from dotenv import load_dotenv
-import datetime
 from flask_cors import CORS
 
 class Translator:
@@ -71,10 +70,6 @@ app = Flask(
 
 # CORS(app) # enables next js to make backend requests to flask
 translator = Translator()
-
-@app.route("/api/python")
-def hello_world():
-    return "<p>Hello, World!</p>"
 
 @app.route("/api/translate", methods=['GET'])
 def translate():
