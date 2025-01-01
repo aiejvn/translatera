@@ -89,12 +89,7 @@ def translate():
 
 @app.route("/")
 def main():
-    return render_template(
-        "page.tsx",
-        # "index.html",
-        title="translatera"
-        # url=os.getenv("URL")
-    )
+    return jsonify({'message':'Flask cannot handle dynamic React pages. Stop rendering using Flask.'}), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080, load_dotenv=True)
