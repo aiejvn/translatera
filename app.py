@@ -62,7 +62,7 @@ def test_translator():
 
 # env file contains environment (debug/production)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="app")
 CORS(app) # enables next js to make backend requests to flask
 translator = Translator()
 
