@@ -20,7 +20,7 @@ export default function Home() {
   const [inputLanguage, setInputLanguage] = useState("English");
   const [outputLanguage, setOutputLanguage] = useState("French");
 
-  const languages = [
+  const languages: string[] = [
     "English",
     "Mandarin Chinese",
     "Hindi",
@@ -77,7 +77,7 @@ export default function Home() {
       }
     }
 
-    const timer = setInterval(checkInput, 5000);
+    const timer = setInterval(checkInput, 2000);
 
     return () => clearInterval(timer);
   }, [content, oldContent, handleChange]);
@@ -93,7 +93,7 @@ export default function Home() {
             className='w-[600px] h-[300px]'
           />
 
-          <Select onValueChange={(language) => setInputLanguage(language)}>
+          <Select onValueChange={(language:string) => setInputLanguage(language)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="English" />
             </SelectTrigger>
@@ -116,7 +116,7 @@ export default function Home() {
           />
           
 
-          <Select onValueChange={(language) => setOutputLanguage(language)}>
+          <Select onValueChange={(language:string) => setOutputLanguage(language)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="French" />
             </SelectTrigger>
