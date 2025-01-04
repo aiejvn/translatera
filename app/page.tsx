@@ -58,7 +58,7 @@ export default function Home() {
     // console.log(params.get("output_langauge"));
     // console.log(outputLanguage);
 
-    fetch(`http://localhost:8080/api/translate?${params}`).then(
+    fetch(`3.132.212.143/api/translate?${params}`).then(
       response => response.json()
     ).then(
       data => {

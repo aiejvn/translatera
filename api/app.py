@@ -77,7 +77,7 @@ def translate():
     input_language = request.args.get('input_language')
     output_language = request.args.get('output_language')
     
-    # print(input_language, output_language, content)
+    print(input_language, output_language, content)
     return jsonify({
         'message':translator.translate(content, original=input_language, target=output_language)
     })
