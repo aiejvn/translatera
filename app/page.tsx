@@ -87,7 +87,7 @@ export default function Home() {
 
   return (
     <main className='flex flex-row p-8 gap-2'>
-
+      
         <div className='flex flex-col'>
           <Textarea 
             placeholder='Enter some text to start...'
