@@ -43,29 +43,35 @@ export default function Home() {
     "Vietnamese"
   ]
 
-  const handleChange = (input:string) => {
+  const handleChange = async (input:string) => {
     setContent(input);
-    setMessage("Translating...")
+    setMessage("Translating...");
+    
+    const payload = {
+      "model": "llama3.1:8b",
+      "messages": [{
+          "role" : "user",
+          "content" : `Translate ${content} from ${inputLanguage} to ${outputLanguage}. Output should contain words from ${outputLanguage} only.`
+      }],
+      "max_tokens": 120,
+      "temperature": 0.9,
+      "request_timeout_time": 240
+    };
 
-    const params = new URLSearchParams({
-      content : content, 
-      input_language : inputLanguage,
-      output_language : outputLanguage,
-    });
+    try {
+      const response = await fetch('/api/server', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    // console.log(params.get("content"));
-    // console.log(params.get("input_language"));
-    // console.log(params.get("output_langauge"));
-    // console.log(outputLanguage);
-
-    fetch(`flasktranslatera.duckdns.org/api/translate?${params}`).then(
-      response => response.json()
-    ).then(
-      data => {
-        // console.log(data);
-        setMessage(data.message);
-      }
-    )
+      const data = await response.json();
+      setMessage(data.choices[0].message.content);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   // so that we don't make requests on the user's every touch.
@@ -100,7 +106,7 @@ export default function Home() {
             <SelectContent>
               {
                 languages.map(language => (
-                  <SelectItem value={language}>{language}</SelectItem>
+                  <SelectItem value={language} key={language}>{language}</SelectItem>
                 ))
               }
             </SelectContent>
@@ -123,7 +129,7 @@ export default function Home() {
             <SelectContent>
               {
                 languages.map(language => (
-                  <SelectItem value={language}>{language}</SelectItem>
+                  <SelectItem value={language} key={language}>{language}</SelectItem>
                 ))
               }
             </SelectContent>
