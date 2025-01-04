@@ -1,9 +1,6 @@
 "use client"
 
-import Image from 'next/image'
-import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
@@ -43,39 +40,39 @@ export default function Home() {
     "Vietnamese"
   ]
 
-  const handleChange = async (input:string) => {
-    setContent(input);
-    setMessage("Translating...");
-    
-    const payload = {
-      "model": "llama3.1:8b",
-      "messages": [{
-          "role" : "user",
-          "content" : `Translate ${content} from ${inputLanguage} to ${outputLanguage}. Output should contain words from ${outputLanguage} only.`
-      }],
-      "max_tokens": 120,
-      "temperature": 0.9,
-      "request_timeout_time": 240
-    };
-
-    try {
-      const response = await fetch('/api/server', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      setMessage(data.choices[0].message.content);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-
   // so that we don't make requests on the user's every touch.
   useEffect(() => {
+    const handleChange = async (input:string) => {
+      setContent(input);
+      setMessage("Translating...");
+      
+      const payload = {
+        "model": "llama3.1:8b",
+        "messages": [{
+            "role" : "user",
+            "content" : `Translate ${content} from ${inputLanguage} to ${outputLanguage}. Output should contain words from ${outputLanguage} only.`
+        }],
+        "max_tokens": 120,
+        "temperature": 0.9,
+        "request_timeout_time": 240
+      };
+  
+      try {
+        const response = await fetch('/api/server', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        const data = await response.json();
+        setMessage(data.choices[0].message.content);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
     const checkInput = () => {
       if(oldContent != content){
         handleChange(content);
@@ -86,7 +83,7 @@ export default function Home() {
     const timer = setInterval(checkInput, 2000);
 
     return () => clearInterval(timer);
-  }, [content, oldContent, handleChange]);
+  }, [content, oldContent, inputLanguage, outputLanguage]);
 
   return (
     <main className='flex flex-row p-8 gap-2'>

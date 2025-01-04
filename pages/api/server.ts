@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import * as dotenv from 'dotenv'
 
-require('dotenv').config();
+dotenv.config();
 
 const apiKey = process.env.INFERA_API_KEY;
 if(typeof(window) == 'undefined'){
@@ -49,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const response = await makePostRequest(payload);
       res.status(200).json(response);
     } catch (error) {
-      res.status(500).json({ error: 'Error processing the request' });
+      res.status(500).json({ error: `Error processing the request: ${error}` });
     }
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });
