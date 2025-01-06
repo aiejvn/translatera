@@ -123,7 +123,7 @@ export default function Home() {
 
           <div className='flex flex-col ml-[170px]'>
             <Textarea 
-              placeholder=''
+              placeholder='Output goes here...'
               value={message}
               readOnly
               className='w-[600px] h-[300px]'

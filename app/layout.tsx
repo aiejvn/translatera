@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "translatera",
-  description: "A simple translation website built with the Infera API",
+  description: "A simple translation website built with the Infera API.",
 };
 
 export default function RootLayout({
