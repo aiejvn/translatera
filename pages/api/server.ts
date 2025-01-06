@@ -30,6 +30,9 @@ async function makePostRequest(payload: {
       body: JSON.stringify(payload),
     });
 
+    // console.log(response);
+    // console.log(apiKey);
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

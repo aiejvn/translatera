@@ -86,52 +86,81 @@ export default function Home() {
   }, [content, oldContent, inputLanguage, outputLanguage]);
 
   return (
-    <main className='flex flex-row p-8 gap-2'>
-      
-        <div className='flex flex-col'>
-          <Textarea 
-            placeholder='Enter some text to start...'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className='w-[600px] h-[300px]'
+    <div>
+      {/* Header */}
+      <div>
+        <img
+          src="./logov0.png"
+          alt="translatera logo"
+          className='w-[500]'
+        />
+        <hr className='h-1 bg-black border-0'></hr>
+      </div>
+      {/* Main translation section */}
+      <main className='content-container flex flex-row p-8 gap-2'>
+        
+          <div className='flex flex-col'>
+            <Textarea 
+              placeholder='Enter some text to start...'
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className='w-[600px] h-[300px]'
+            />
+
+            <Select onValueChange={(language:string) => setInputLanguage(language)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="English" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  languages.map(language => (
+                    <SelectItem value={language} key={language}>{language}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className='flex flex-col ml-[170px]'>
+            <Textarea 
+              placeholder=''
+              value={message}
+              readOnly
+              className='w-[600px] h-[300px]'
+            />
+            
+
+            <Select onValueChange={(language:string) => setOutputLanguage(language)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="French" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  languages.map(language => (
+                    <SelectItem value={language} key={language}>{language}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+      </main>
+      {/* Footer stuff */}
+      <footer className="flex flex-row gap-4">
+        <a href="https://github.com/aiejvn/translatera">
+          <img
+            src="./github-logo.png"
+            alt="Github Repo Source"
+            className="h-[40] w-[40] ml-3"
           />
-
-          <Select onValueChange={(language:string) => setInputLanguage(language)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="English" />
-            </SelectTrigger>
-            <SelectContent>
-              {
-                languages.map(language => (
-                  <SelectItem value={language} key={language}>{language}</SelectItem>
-                ))
-              }
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className='flex flex-col ml-[170px]'>
-          <Textarea 
-            placeholder=''
-            value={message}
-            readOnly
-            className='w-[600px] h-[300px]'
+        </a>
+        <a href="https://www.infera.org/">
+          <img
+            src="./infera-logo.png"
+            alt="infera.org"
+            className="h-[40] w-[40] rounded-3xl"
           />
-          
-
-          <Select onValueChange={(language:string) => setOutputLanguage(language)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="French" />
-            </SelectTrigger>
-            <SelectContent>
-              {
-                languages.map(language => (
-                  <SelectItem value={language} key={language}>{language}</SelectItem>
-                ))
-              }
-            </SelectContent>
-          </Select>
-        </div>
-    </main>
+        </a>
+      </footer>
+    </div>
   )
 }
