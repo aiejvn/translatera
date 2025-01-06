@@ -92,7 +92,7 @@ export default function Home() {
         <img
           src="./logov0.png"
           alt="translatera logo"
-          className='w-[500]'
+          className='w-[500px]'
         />
         <hr className='h-1 bg-black border-0'></hr>
       </div>
@@ -150,14 +150,14 @@ export default function Home() {
           <img
             src="./github-logo.png"
             alt="Github Repo Source"
-            className="h-[40] w-[40] ml-3"
+            className="h-[40px] w-[40px] ml-3"
           />
         </a>
         <a href="https://www.infera.org/">
           <img
             src="./infera-logo.png"
             alt="infera.org"
-            className="h-[40] w-[40] rounded-3xl"
+            className="h-[40px] w-[40px] rounded-full"
           />
         </a>
       </footer>
