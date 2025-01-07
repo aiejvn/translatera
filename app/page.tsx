@@ -9,15 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { HighlightWithinTextarea } from "react-highlight-within-textarea";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 export default function Home() {
   const [message, setMessage] = useState("");
@@ -103,7 +94,7 @@ export default function Home() {
         "model": "llama3.1:8b",
         "messages": [{
             "role" : "user",
-            "content" : `Given the sentence "${message}", which is in ${outputLanguage}, what does ${input} mean? Output should explain it using words from ${inputLanguage}.`
+            "content" : `Given the sentence "${message}", which is in ${outputLanguage}, explain each word from ${input} in the context of ${message} in 20 words or less from ${inputLanguage}.`
         }],
         "max_tokens": 120,
         "temperature": 0.9,
@@ -154,7 +145,7 @@ export default function Home() {
         <hr className='h-1 bg-black border-0'></hr>
       </div>
       {/* Main translation section */}
-      <main className='content-container flex flex-row p-8 gap-2'>
+      <main className='flex flex-row p-8 gap-2'>
         
           <div className='flex flex-col'>
             <Textarea 
@@ -179,46 +170,13 @@ export default function Home() {
           </div>
 
           <div className='flex flex-col ml-[170px]'>
-            <Textarea
-              placeholder='Output goes here...'
-              // value={message}
-              onChange={() => {}}
-              readOnly
-              className='w-[600px] h-[300px]'
-            >
-              {
-                // split result by spaces, map each resulting word to a HighlightWithinTextArea
-                // where clicking results in the word highlighting and showing meaning
-                // may require installing shadcn popup component
-
-                // If the user clicks a new word, highlight that one instead.
-                // If the user clicks the same word, unhighlight it.
-                message.split(" ").map((word, index) => 
-                  <div key={index} onClick={() => {handleUserHighLightChange(word)}}>
-                    { word == highlightedWord ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <HighlightWithinTextarea 
-                          value={word} 
-                          highlight={highlightedWord}
-                        />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>{word}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>{wordMeaning}</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu> )
-                    :
-                    <HighlightWithinTextarea 
-                        value={word} 
-                        highlight={highlightedWord}
-                    />}
-                  </div>)
-              }
-              {/* <HighlightWithinTextarea /> */}
-            </Textarea>
-            
+            <div className='w-[600px] h-[300px] flex min-h-[60px] rounded-md border border-neutral-200 bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:border-neutral-800 dark:placeholder:text-neutral-400 dark:focus-visible:ring-neutral-300 w-[600px] h-[300px]'>
+              {message.split(" ").filter(word => word !== "").map((word, index) => 
+                  <span key={index} onClick={() => handleUserHighLightChange(word)} className={(word == highlightedWord && word != " ") ? "h-[18.4px] bg-yellow-300" : ""}>
+                    {word} &nbsp;
+                  </span> 
+                )}
+            </div>
 
             <Select onValueChange={(language:string) => setOutputLanguage(language)}>
               <SelectTrigger className="w-[180px]">
@@ -234,6 +192,13 @@ export default function Home() {
             </Select>
           </div>
       </main>
+      
+      {/* Shows meaning of words user selected */}
+      <div className='px-8 py-2 flex flex-col min-h-[200px]'>
+        <div className='italic text-2xl'>{highlightedWord == "" ? "" : `"${highlightedWord}"`}</div>
+        {wordMeaning}
+      </div>
+
       {/* Footer stuff */}
       <footer className="flex flex-row gap-4">
         <a href="https://github.com/aiejvn/translatera">
