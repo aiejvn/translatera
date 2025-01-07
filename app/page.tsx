@@ -9,11 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { HighlightWithinTextarea } from "react-highlight-within-textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Home() {
   const [message, setMessage] = useState("");
   const [content, setContent] = useState("");
   const [oldContent, setOldContent] = useState(""); // to know if user changed input or not
+
+  const [highlightedWord, setHighlightedWord] = useState(""); 
+  const [oldHighlightedWord, setOldHighlightedWord] = useState(""); 
+  const [wordMeaning, setWordMeaning] = useState("");
+
   const [inputLanguage, setInputLanguage] = useState("English");
   const [outputLanguage, setOutputLanguage] = useState("French");
 
@@ -39,6 +53,14 @@ export default function Home() {
     "Korean",
     "Vietnamese"
   ]
+
+  const handleUserHighLightChange = (word:string) => {
+    if(highlightedWord == word){
+      setHighlightedWord("");
+    }else{
+      setHighlightedWord(word);
+    }
+  }
 
   // so that we don't make requests on the user's every touch.
   useEffect(() => {
@@ -72,18 +94,53 @@ export default function Home() {
         console.error('Error fetching data:', error);
       }
     }
+    
+    const handleHighLightChange = async (input:string) => {
+      setHighlightedWord(input);
+      setWordMeaning("Translating...");
+
+      const payload = {
+        "model": "llama3.1:8b",
+        "messages": [{
+            "role" : "user",
+            "content" : `Given the sentence "${message}", which is in ${outputLanguage}, what does ${input} mean? Output should explain it using words from ${inputLanguage}.`
+        }],
+        "max_tokens": 120,
+        "temperature": 0.9,
+        "request_timeout_time": 240
+      };
+      
+      try {
+        const response = await fetch('/api/server', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        const data = await response.json();
+        setWordMeaning(data.choices[0].message.content);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
 
     const checkInput = () => {
       if(oldContent != content){
         handleChange(content);
         setOldContent(content);
       }
+      if(highlightedWord != "" && oldHighlightedWord != highlightedWord){
+        handleHighLightChange(highlightedWord);
+        setOldHighlightedWord(highlightedWord);
+      }
     }
 
     const timer = setInterval(checkInput, 2000);
 
     return () => clearInterval(timer);
-  }, [content, oldContent, inputLanguage, outputLanguage]);
+  }, [content, oldContent, inputLanguage, outputLanguage, highlightedWord, message, oldHighlightedWord]);
 
   return (
     <div>
@@ -122,12 +179,45 @@ export default function Home() {
           </div>
 
           <div className='flex flex-col ml-[170px]'>
-            <Textarea 
+            <Textarea
               placeholder='Output goes here...'
-              value={message}
+              // value={message}
+              onChange={() => {}}
               readOnly
               className='w-[600px] h-[300px]'
-            />
+            >
+              {
+                // split result by spaces, map each resulting word to a HighlightWithinTextArea
+                // where clicking results in the word highlighting and showing meaning
+                // may require installing shadcn popup component
+
+                // If the user clicks a new word, highlight that one instead.
+                // If the user clicks the same word, unhighlight it.
+                message.split(" ").map((word, index) => 
+                  <div key={index} onClick={() => {handleUserHighLightChange(word)}}>
+                    { word == highlightedWord ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <HighlightWithinTextarea 
+                          value={word} 
+                          highlight={highlightedWord}
+                        />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>{word}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>{wordMeaning}</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu> )
+                    :
+                    <HighlightWithinTextarea 
+                        value={word} 
+                        highlight={highlightedWord}
+                    />}
+                  </div>)
+              }
+              {/* <HighlightWithinTextarea /> */}
+            </Textarea>
             
 
             <Select onValueChange={(language:string) => setOutputLanguage(language)}>
